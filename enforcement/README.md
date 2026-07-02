@@ -78,6 +78,10 @@ enforcement/
 7. **Chmod the shell hooks:** `chmod +x enforcement/.claude/hooks/session-start.sh git-hooks/pre-commit.sh`.
 8. **Strip the "TEMPLATE — installs to…" header comment** from each installed copy — the installed file is the real thing, not a template, and leftover `{{…}}` mentions in those headers pollute the placeholder doneness check.
 
+## Adopting into an existing codebase
+
+The engine is diff-based on purpose: pre-commit (`--staged`) and CI (`--range`) check **added lines only**, so an existing codebase is grandfathered by construction — installing the harness does not turn old code red. Run `--all` once as a **debt report** and file the hits as ledger tasks; new code is held to the rules from day one while debt burns down deliberately (**the ratchet**). Merge cases (existing `settings.json`, pre-commit hook, CI) and the full protocol: `../ADOPT-EXISTING.md`.
+
 ## Cross-agent note
 
 The **git hook + CI** are agent-agnostic — they bind for any agent *and* any human, and are the real backstop. The **`.claude/` hooks and commands** are Claude Code–specific; for another agent (Cursor, etc.) replicate the same guard logic in that agent's hook system, but keep the git-hook + CI regardless. Logic-heavy pieces are Node (`.mjs`) because most agent projects have Node — port them to your runtime if not.

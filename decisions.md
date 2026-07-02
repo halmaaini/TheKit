@@ -20,6 +20,7 @@
 - **Group decisions into thematic sections** (below). Add sections your project needs; delete those it doesn't.
 - **To change a locked decision:** amend the row in place, bump the version, and add an entry to `logs/decisions-log.md` explaining the change. Never silently overwrite history.
 - **Versioning convention:** the blank template is `0.1`; your first real fill bumps to `0.2`; bump the minor per amendment batch after that, and call it `1.0` when the record is first locked/shared beyond yourself.
+- **Adopting an existing codebase?** Decisions reverse-engineered from code carry **(as-built, adopted YYYY-MM-DD)** in their rationale — they record what the code *does*, owner-confirmed; what you wish were different goes to the roadmap, never here as fact (see `ADOPT-EXISTING.md`).
 - **Mark unresolved items `OPEN`** and track them in the Open Questions section until they lock.
 
 ---

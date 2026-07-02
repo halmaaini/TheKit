@@ -17,6 +17,8 @@ on:
 jobs:
   guardrails:
     runs-on: ubuntu-latest
+    env:
+      KIT_PATH: "." # ⟨FILL: where the kit lives — "." when it IS the repo root, "kit" if adopted into a subfolder (ADOPT-EXISTING.md)⟩
     steps:
       - name: Checkout (full history, for diffing against the base)
         uses: actions/checkout@v4
@@ -50,16 +52,16 @@ jobs:
       - name: Hard lines — forbidden patterns in the PR diff
         run: |
           git fetch --no-tags origin "${{ github.base_ref }}"
-          node scripts/check-hard-lines.mjs --range "origin/${{ github.base_ref }}...HEAD" --manifest enforcement/hard-lines.json
+          node scripts/check-hard-lines.mjs --range "origin/${{ github.base_ref }}...HEAD" --manifest "${KIT_PATH}/enforcement/hard-lines.json"
 
       - name: Hard lines — fixtures prove every pattern fires
-        run: node scripts/check-hard-lines.mjs --self-test --manifest enforcement/hard-lines.json
+        run: node scripts/check-hard-lines.mjs --self-test --manifest "${KIT_PATH}/enforcement/hard-lines.json"
 
       - name: Hard lines — every line in governance/13 has a wired check
-        run: node scripts/check-hard-lines.mjs --coverage --doc governance/13-domain-hard-lines.md --manifest enforcement/hard-lines.json
+        run: node scripts/check-hard-lines.mjs --coverage --doc "${KIT_PATH}/governance/13-domain-hard-lines.md" --manifest "${KIT_PATH}/enforcement/hard-lines.json"
 
       - name: Ledger
-        run: node scripts/validate-ledger.mjs
+        run: node scripts/validate-ledger.mjs "${KIT_PATH}/delivery/02-task-ledger.md"
 
       - name: MANIFEST in sync with the tree
-        run: node scripts/check-manifest.mjs --manifest MANIFEST.md
+        run: node scripts/check-manifest.mjs --manifest "${KIT_PATH}/MANIFEST.md"

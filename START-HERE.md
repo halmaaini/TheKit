@@ -92,6 +92,8 @@ The kit rests on one principle, borrowed from good system design:
 
 ## How to instantiate this kit in a new project
 
+> **Adopting into an EXISTING codebase?** Follow **`ADOPT-EXISTING.md`** instead of the steps below — same kit, inverted flow (*code → decisions*), with a grandfathering ratchet so install day isn't red day.
+
 Do these in order. Don't skip — each step feeds the next. **New to the kit? Skim `example/` first** — a complete filled instance (a fictional URL shortener) that shows what "done" looks like.
 
 0. **Clean up the copy.** A "Use this template" copy inherits TheKit's own `README.md` and license files. Replace `README.md` with your project's readme, **keeping a "Based on TheKit" attribution line** (the LICENSE requires credit); keep `LICENSE` and `LICENSE-CC-BY-4.0.txt` — they license the kit content now in your repo.

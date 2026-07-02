@@ -16,6 +16,11 @@ read **[START-HERE.md](./START-HERE.md)** (technical) or **[READTHIS.md](./READT
 (plain-English). New to it? Skim **[example/](./example/)** — a filled worked
 instance (a fictional URL shortener) showing what "done" looks like.
 
+**Already have a codebase?** Follow **[ADOPT-EXISTING.md](./ADOPT-EXISTING.md)** —
+the kit drops into a `kit/` subfolder, the record is reverse-engineered *as-built*,
+and a grandfathering ratchet holds every new line to the rules without turning
+your existing code red.
+
 ## What's inside
 - `decisions.md` — the single source of truth
 - `intake/` — drop raw material; the agent distills it into the docs
