@@ -156,6 +156,7 @@ Makes the *checkable* rules bind mechanically. Installed into the target repo (`
 |---|---|---|---|
 | `README.md` | Living | Lead | Install steps + the rule→mechanism map. |
 | `state-machine.md` | Living | Lead | The ledger/gate state machine the validator enforces — keep in sync with the validator. |
+| `hard-lines.json` | Living | Lead/Architect | **The machine-readable half of `governance/13`** — one entry per hard line (patterns + required fixtures, or `mechanical: false` + test). `check-hard-lines.mjs --coverage` binds it 1:1 to `13`; pre-commit, CI, and `/gate` run the same engine. Add entries via `/hardline`. |
 | `.claude/`, `git-hooks/`, `scripts/`, `ci/` | Living (code) | Lead | Executable templates — fill placeholders, then copy into the repo. |
 
 ---

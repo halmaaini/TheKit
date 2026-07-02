@@ -39,9 +39,17 @@ Run and record the result of each:
 
 Any non-zero exit fails the gate.
 
-## 5 — Run the hard-line grep checks
+## 5 — Run the hard-line checks
 
-Run the project's hard-line greps from `{{KIT_PATH}}/governance/13-domain-hard-lines.md` (each hard line names its spot-check). Examples: unscoped data queries, direct vendor/SDK imports outside the wrapper layer, a canonical calculation performed outside its home module, restricted fields leaking into responses. Any hit fails the gate.
+The hard-line spot-checks are machine-readable (`{{KIT_PATH}}/enforcement/hard-lines.json` — one entry per line in `governance/13`). Run all three:
+
+```bash
+node scripts/check-hard-lines.mjs --self-test --manifest {{KIT_PATH}}/enforcement/hard-lines.json
+node scripts/check-hard-lines.mjs --coverage --doc {{KIT_PATH}}/governance/13-domain-hard-lines.md --manifest {{KIT_PATH}}/enforcement/hard-lines.json
+node scripts/check-hard-lines.mjs --all --manifest {{KIT_PATH}}/enforcement/hard-lines.json
+```
+
+`--all` sweeps the whole tree, not just a diff — a gate audits the phase, not a commit. Any non-zero exit fails the gate. For lines marked `mechanical: false`, confirm their named test file ran green in step 4.
 
 ## 6 — Decide
 

@@ -13,7 +13,7 @@ Keep it to **2–5 hard lines.** If everything is a hard line, nothing is. Each 
 - **Enforced at the strongest layer available** — a DB constraint beats app code beats a code-review checklist.
 - **Traceable** — it cites the decision that made it a hard line.
 
-> **Wire the check when you write the line.** Whenever you add or change a hard line, wire its mechanical enforcement into `../enforcement/` (a pre-commit or CI check, or a guard hook) and add a row to the rule→mechanism map in `../enforcement/README.md`. A hard line with no mechanical check is only a hope.
+> **Wire the check when you write the line — the harness enforces this.** Every hard line here must have a matching entry (`HL-<n>`) in `../enforcement/hard-lines.json`: greppable lines carry `patterns` **with fixtures proving they fire**; non-greppable lines carry `mechanical: false` plus the test that enforces them. One engine (`../enforcement/scripts/check-hard-lines.mjs`) runs the same checks in pre-commit, CI, and `/gate`, and its `--coverage` mode **fails when a line here has no wired check** (or a check no line). Use `/hardline` to do both halves in one loop, and add a row to the rule→mechanism map in `../enforcement/README.md`. A hard line with no mechanical check is only a hope.
 
 > ⟨FILL⟩ Delete everything below this line and write your project's hard lines using the template that follows. The two worked examples show the shape and the range.
 
@@ -36,7 +36,7 @@ Keep it to **2–5 hard lines.** If everything is a hard line, nothing is. Each 
 - Schema/DB: <constraint, trigger, or policy — the strongest layer>
 - Code: <the required pattern + the marker comment, see 08-code-comments>
 - Test: <the exact test that fails on violation>
-- Spot-check: <a grep or review step>
+- Spot-check: <the `HL-<N>` entry in ../enforcement/hard-lines.json — the actual regex lives THERE, not (only) in prose>
 ```
 
 ---
