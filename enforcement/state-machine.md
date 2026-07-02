@@ -31,6 +31,7 @@ Not Started ── start ──▶ In Progress
 In Progress ── hit blocker ──▶ Blocked ── resolved ──▶ In Progress
 In Progress ── exit criteria met ──▶ Done
 Done ── review ──▶ Review: Passed   |   Review: Failed
+Done / Review: Passed ── dependency regressed ──▶ Blocked   (see rule below)
 Review: Failed ── fix ──▶ In Progress
 Review: Passed ──▶ (task terminal; contributes to its phase gate)
 
@@ -40,10 +41,14 @@ Gate: Passed ──▶ (phase terminal; next phase unblocks)
 
 Any move not on this list is illegal — e.g. `Not Started → Done`, `Done → Gate: Passed`, `Review: Failed → Done`.
 
+## Dependency regression
+
+When a dependency **leaves** Done-or-beyond (its review failed after dependents started), every started dependent moves to **`Blocked`** with a `BLOCKED — upstream: [task id] failed review` note in its handoff log. `Blocked` is exempt from the dependency invariant, so this is always a legal, truthful state to record. Re-entry once upstream re-passes: `Blocked → In Progress → Done → re-review` — the re-review is deliberate, because an upstream fix may invalidate the dependent's work.
+
 ## Preconditions (invariants the validator checks)
 
 1. **Legal status.** Every status is one of the values above.
-2. **Dependency satisfaction.** A task that has started (`In Progress`, `Done`, `Review: *`) has **every** "Depends On" entry satisfied — a dependency counts as satisfied only when it is `Done` or `Gate: Passed`.
+2. **Dependency satisfaction.** A task that has started (`In Progress`, `Done`, `Review: *`) has **every** "Depends On" entry satisfied — a dependency counts as satisfied when it is `Done` **or beyond** (`Review: Passed`, `Gate: Passed`). `Blocked` tasks are exempt from this check — `Blocked` is exactly how a dependent records an upstream regression.
 3. **Gate precondition.** A phase's gate row is `Gate: Passed` **only if every task in that phase is `Review: Passed`.** No exceptions, no partial gates.
 4. **No skips.** A task cannot reach `Done` from `Not Started` without passing through `In Progress`; a task cannot be `Review: Passed` without first being `Done`.
 

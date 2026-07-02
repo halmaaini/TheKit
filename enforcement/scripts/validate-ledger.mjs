@@ -13,7 +13,7 @@
 import { readFileSync } from "node:fs";
 
 const STATUSES = ["Not Started", "In Progress", "Blocked", "Done", "Review: Failed", "Review: Passed", "Gate: Pending", "Gate: Passed"];
-const SATISFIED_DEP = new Set(["Done", "Gate: Passed"]);
+const SATISFIED_DEP = new Set(["Done", "Review: Passed", "Gate: Passed"]); // Done or beyond — a reviewed task still satisfies its dependents
 const STARTED = new Set(["In Progress", "Done", "Review: Failed", "Review: Passed"]);
 
 // Allowed transitions — keep in sync with enforcement/state-machine.md.
@@ -21,9 +21,9 @@ const TRANSITIONS = {
   "Not Started": ["In Progress", "Blocked"],
   "In Progress": ["Blocked", "Done"],
   "Blocked": ["In Progress"],
-  "Done": ["Review: Passed", "Review: Failed"],
+  "Done": ["Review: Passed", "Review: Failed", "Blocked"], // → Blocked = dependency regressed (see state-machine.md)
   "Review: Failed": ["In Progress"],
-  "Review: Passed": ["Gate: Pending"],
+  "Review: Passed": ["Gate: Pending", "Blocked"], // → Blocked = dependency regressed
   "Gate: Pending": ["Gate: Passed", "Review: Failed"],
   "Gate: Passed": [],
 };
@@ -79,7 +79,7 @@ for (const t of tasks) {
     if (/gate:\s*passed/i.test(d)) continue;            // explicit "<phase> → Gate: Passed" literal — trust the gate check below
     const ds = statusById[d];
     if (ds === undefined) continue;                     // dep not a known task id (free-text) — skip
-    if (!SATISFIED_DEP.has(ds)) errors.push(`'${t.id}' is '${t.status}' but dependency '${d}' is '${ds}' (must be Done or Gate: Passed)`);
+    if (!SATISFIED_DEP.has(ds)) errors.push(`'${t.id}' is '${t.status}' but dependency '${d}' is '${ds}' (must be Done or beyond — Done, Review: Passed, or Gate: Passed). If the dependency regressed, set '${t.id}' to Blocked (see state-machine.md).`);
   }
 }
 

@@ -42,7 +42,10 @@ if echo "${staged}" | grep -q "task-ledger.md"; then
   node "${KIT}/scripts/validate-ledger.mjs" || fail=1
 fi
 
-# 4) FAST quality gate (keep it quick; heavy suites run in CI). ⟨FILL your commands.⟩
+# 4) FAST quality gate. ⟨FILL your commands.⟩ If your test suite runs in a few seconds, RUN IT HERE:
+#    the hard-line greps above only see ADDED lines, so DELETING a guard is invisible to them —
+#    a fast test suite is the only commit-time net for that. Keep only genuinely slow suites CI-only.
+# {{TEST_CMD}} || fail=1
 # {{LINT_CMD}} || fail=1
 # {{TYPE_CMD}} || fail=1
 

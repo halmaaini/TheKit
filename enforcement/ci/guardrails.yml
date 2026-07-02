@@ -24,6 +24,9 @@ jobs:
           fetch-depth: 0
 
       # ⟨FILL: swap for your runtime — actions/setup-node, setup-python, setup-go, … ⟩
+      # No install / lint / typecheck in your stack (zero-dep, no such tooling)? DELETE that step
+      # entirely — a placeholder filled with `true` is worse than no step. Keep Test + the
+      # hard-line/ledger steps: those run for every project.
       - name: Set up runtime
         uses: actions/setup-node@v4
         with:

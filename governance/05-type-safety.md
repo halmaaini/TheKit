@@ -1,7 +1,7 @@
 # 05 — Type Safety
 
 > **Template** · Lifecycle: living · Owner: Lead · Load: Always
-> Fill: replace `{{VALIDATION_LIB}}`/`{{ORM}}`/`{{LANGUAGE}}` with your stack; keep the boundary-validation rules. The TypeScript + Zod code below is a labeled "e.g." — swap it for your language's equivalent. Delete this file only if your language has no type system to protect.
+> Fill: replace `{{VALIDATION_LIB}}`/`{{ORM}}`/`{{LANGUAGE}}` with your stack; keep the boundary-validation rules. The TypeScript + Zod code below is a labeled "e.g." — swap it for your language's equivalent. **No static types in your stack (plain JS, etc.)? Don't delete this doc** — keep the boundary-validation half as your runtime-safety rules; dynamic languages need that gate most. Delete only if you have neither a type system nor an input boundary to protect.
 > Related: `12-data-access-and-schema.md`, `15-error-handling.md`, `19-api-contract.md`
 
 ## Purpose
