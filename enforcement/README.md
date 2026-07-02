@@ -31,7 +31,8 @@ Every mechanical rule in the kit now has an enforcer:
 | Append-only logs — never edit/delete past entries (`14`, logs/) | pre-commit rejects any commit that removes/modifies an existing log line | `git-hooks/pre-commit.sh` |
 | Don't change a locked decision/governance rule silently | write-guard forces human confirmation on `decisions.md` / `governance/**` edits | `.claude/hooks/guard-write.mjs` |
 | Agents never push to the default branch / never `--no-verify` (`delivery/06`) | bash-guard denies those commands | `.claude/hooks/guard-bash.mjs` |
-| Your domain hard lines (no `any`, unscoped queries, secrets…) (`13`, `05`, `16`) | grep checks on staged diff + in CI | `git-hooks/pre-commit.sh`, `ci/guardrails.yml` |
+| Your domain hard lines (no `any`, unscoped queries, secrets…) (`13`, `05`, `16`) | one manifest + one engine, run identically by pre-commit (`--staged`), CI (`--range`), and `/gate` (`--all`) | `hard-lines.json`, `scripts/check-hard-lines.mjs` |
+| “Wire the check when you write the line” — no hard line without a check (`13`) | `--coverage` fails when a `13` heading has no manifest entry (or vice-versa); `--self-test` requires fixtures so every pattern provably fires | `check-hard-lines.mjs` via pre-commit + CI; `/hardline` drives the loop |
 | Tests / lint / type green before merge | required CI checks + branch protection | `ci/guardrails.yml` |
 | Provenance / immutability / isolation domain lines (`13`) | code-level DB triggers + tests (your app owns these) | out of harness scope — see each hard line's *Enforcement* in `governance/13` |
 
@@ -41,6 +42,7 @@ Every mechanical rule in the kit now has an enforcer:
 enforcement/
 ├── README.md                  ← this file
 ├── state-machine.md           ← the ledger/gate state machine the validator enforces
+├── hard-lines.json            ← machine-readable hard-line checks — one entry per line in governance/13
 ├── .claude/
 │   ├── settings.json          → repo .claude/settings.json  (registers hooks + permissions)
 │   ├── hooks/
@@ -48,11 +50,12 @@ enforcement/
 │   │   ├── guard-bash.mjs       → repo .claude/hooks/  (PreToolUse Bash: block push-to-main / --no-verify)
 │   │   └── guard-write.mjs      → repo .claude/hooks/  (PreToolUse Edit/Write: confirm on decisions/governance)
 │   └── commands/
-│       ├── task.md · gate.md · handoff.md  → repo .claude/commands/  (the operating loop)
+│       ├── task.md · gate.md · handoff.md · hardline.md  → repo .claude/commands/  (the operating loop)
 ├── git-hooks/
 │   └── pre-commit.sh           → repo .git/hooks/pre-commit  (append-only + hard-line + ledger backstop)
 ├── scripts/
-│   └── validate-ledger.mjs     → repo scripts/  (state-machine validator; run by hooks, /gate, CI)
+│   ├── validate-ledger.mjs     → repo scripts/  (state-machine validator; run by hooks, /gate, CI)
+│   └── check-hard-lines.mjs    → repo scripts/  (hard-line engine: --staged · --range · --all · --coverage · --self-test)
 └── ci/
     └── guardrails.yml          → repo .github/workflows/  (agent-agnostic required checks)
 ```
@@ -63,8 +66,9 @@ enforcement/
 2. **Copy the scripts:** `enforcement/scripts/` → `<repo>/scripts/`.
 3. **Install the git hook:** `cp enforcement/git-hooks/pre-commit.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit` — or version it: `git config core.hooksPath git-hooks`.
 4. **Add CI:** `enforcement/ci/guardrails.yml` → `<repo>/.github/workflows/guardrails.yml`, and make it a **required status check** with branch protection on the default branch.
-5. **Fill placeholders** everywhere: `{{KIT_PATH}}` (where the kit lives), `{{DEFAULT_BRANCH}}`, `{{INSTALL_CMD}}` / `{{LINT_CMD}}` / `{{TYPE_CMD}}` / `{{TEST_CMD}}`, and your hard-line grep patterns (from `governance/13`).
-6. **Chmod the shell hooks:** `chmod +x enforcement/.claude/hooks/session-start.sh git-hooks/pre-commit.sh`.
+5. **Fill placeholders** everywhere: `{{KIT_PATH}}` (where the kit lives), `{{DEFAULT_BRANCH}}`, `{{INSTALL_CMD}}` / `{{LINT_CMD}}` / `{{TYPE_CMD}}` / `{{TEST_CMD}}`.
+6. **Fill `hard-lines.json`** — one entry per hard line in `governance/13`, fixtures required (`/hardline` drives the loop; `example/enforcement/hard-lines.json` shows a filled instance). It stays in the kit's `enforcement/` folder (living config); pre-commit/CI/`/gate` point at it via `--manifest`. Remove `"template": true` when your entries are real — until then the scan modes warn instead of binding.
+7. **Chmod the shell hooks:** `chmod +x enforcement/.claude/hooks/session-start.sh git-hooks/pre-commit.sh`.
 
 ## Cross-agent note
 

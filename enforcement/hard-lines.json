@@ -1,0 +1,30 @@
+{
+  "$comment": "TEMPLATE — the machine-readable half of governance/13-domain-hard-lines.md. ONE entry per hard line: id 'HL-<n>' binds to the '### <n> — …' heading in 13 (checked both ways by --coverage). Entries with other ids (e.g. 'GOV-05-…') are extra checkable rules from other governance docs — allowed, coverage-exempt. One engine (scripts/check-hard-lines.mjs) runs these SAME checks in pre-commit (--staged), CI (--range), and /gate (--all), so the checks cannot drift apart. Fixtures (shouldMatch) are REQUIRED — self-test rejects a pattern you can't prove fires. Greppable line → 'patterns'. Not greppable (DB constraint/trigger/RLS…) → 'mechanical': false + 'enforcedBy' + 'testFile' (must exist). FILL: replace the two illustrative entries below with YOUR lines (/hardline drives the loop), then remove \"template\": true — until you do, the scan modes warn instead of binding.",
+  "template": true,
+  "hardLines": [
+    {
+      "$comment": "Illustration 1 — a GREPPABLE rule (this one comes from governance/05, hence the non-HL id). Patterns match added lines; 'files' scopes to paths where the rule applies; fixtures prove the regex fires.",
+      "id": "GOV-05-type-safety",
+      "name": "No unchecked types",
+      "decision": "D-⟨FILL⟩",
+      "patterns": [
+        {
+          "regex": "(:\\s*any\\b|as any\\b|@ts-ignore)",
+          "files": "\\.(ts|tsx)$",
+          "message": "type-safety hard line: 'any' / '@ts-ignore' introduced (governance/05)",
+          "shouldMatch": ["const x: any = load()", "value as any", "// @ts-ignore"],
+          "shouldNotMatch": ["const anyName = 'many'", "const company = anything()"]
+        }
+      ]
+    },
+    {
+      "$comment": "Illustration 2 — a NON-GREPPABLE line (worked example A in 13 §1): the real enforcement is schema + tests. The manifest records WHERE it lives, and self-test verifies the named test file exists — 'only a hope' becomes at least a named, existing test.",
+      "id": "HL-1",
+      "name": "Provenance",
+      "decision": "D-M1",
+      "mechanical": false,
+      "enforcedBy": "NOT-NULL FK join table + links written in the same transaction as content (see governance/13 §1 Enforcement)",
+      "testFile": "⟨FILL: e.g. tests/hard-lines/provenance.test.ts⟩"
+    }
+  ]
+}

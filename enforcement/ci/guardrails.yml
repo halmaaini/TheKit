@@ -41,32 +41,19 @@ jobs:
       - name: Test
         run: "{{TEST_CMD}}" # e.g. npm test
 
-      # Fail the build if any forbidden pattern appears in the PR diff.
-      # Replace the example patterns with YOUR project's hard-line greps
-      # (see governance/13-domain-hard-lines.md — each hard line names its spot-check).
-      - name: Hard lines
+      # Hard-line checks are machine-readable: one manifest (enforcement/hard-lines.json —
+      # one entry per line in governance/13, added via /hardline), one engine, called
+      # identically by pre-commit, CI, and /gate. No hand-copied grep lists to drift.
+      - name: Hard lines — forbidden patterns in the PR diff
         run: |
-          set -euo pipefail
-          BASE="origin/${{ github.base_ref }}"
-          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
-          # Only the added lines in this PR's diff.
-          ADDED="$(git diff "$BASE"...HEAD --unified=0 | grep '^+' | grep -v '^+++' || true)"
-          # ⟨FILL: your patterns⟩ — examples below; extend with your real hard lines
-          # (e.g. unscoped queries, direct vendor imports outside the wrapper layer,
-          #  calculations outside their home module, restricted fields in responses).
-          PATTERNS=(': any' 'as any' '@ts-ignore')
-          FAIL=0
-          for p in "${PATTERNS[@]}"; do
-            if printf '%s\n' "$ADDED" | grep -nF "$p"; then
-              echo "::error::Forbidden pattern in diff: $p"
-              FAIL=1
-            fi
-          done
-          if [ "$FAIL" -ne 0 ]; then
-            echo "Hard-line check failed. Remove the flagged patterns."
-            exit 1
-          fi
-          echo "No forbidden patterns found."
+          git fetch --no-tags origin "${{ github.base_ref }}"
+          node scripts/check-hard-lines.mjs --range "origin/${{ github.base_ref }}...HEAD" --manifest enforcement/hard-lines.json
+
+      - name: Hard lines — fixtures prove every pattern fires
+        run: node scripts/check-hard-lines.mjs --self-test --manifest enforcement/hard-lines.json
+
+      - name: Hard lines — every line in governance/13 has a wired check
+        run: node scripts/check-hard-lines.mjs --coverage --doc governance/13-domain-hard-lines.md --manifest enforcement/hard-lines.json
 
       - name: Ledger
         run: node scripts/validate-ledger.mjs

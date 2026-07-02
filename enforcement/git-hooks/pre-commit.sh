@@ -24,15 +24,17 @@ for f in "${append_only[@]}"; do
   fi
 done
 
-# 2) HARD-LINE greps over the staged diff (governance/13, 05, 16). ⟨FILL: your forbidden patterns.⟩
+# 2) HARD LINES (governance/13, 05, 16): the checks are machine-readable — one entry per hard line in
+#    ${KIT}/enforcement/hard-lines.json (add via /hardline). Pre-commit, CI, and /gate all call the SAME
+#    engine, so the checks cannot drift apart. No hand-written greps here.
 staged=$(git diff --cached --name-only --diff-filter=ACM || true)
-ts_files=$(echo "${staged}" | grep -E '\.(ts|tsx)$' || true)
-if [ -n "${ts_files}" ]; then
-  if git diff --cached -- ${ts_files} | grep -nE '^\+.*(: any\b|as any\b|@ts-ignore)'; then
-    echo "❌ type-safety hard line: 'any' / '@ts-ignore' introduced (governance/05)."
-    fail=1
+if [ -f "${KIT}/enforcement/hard-lines.json" ]; then
+  node "${KIT}/scripts/check-hard-lines.mjs" --staged --manifest "${KIT}/enforcement/hard-lines.json" || fail=1
+  # Wiring is enforced: touching the hard-lines doc or manifest must leave fixtures firing and coverage 1:1.
+  if echo "${staged}" | grep -qE '(13-domain-hard-lines\.md|hard-lines\.json)'; then
+    node "${KIT}/scripts/check-hard-lines.mjs" --self-test --manifest "${KIT}/enforcement/hard-lines.json" || fail=1
+    node "${KIT}/scripts/check-hard-lines.mjs" --coverage --doc "${KIT}/governance/13-domain-hard-lines.md" --manifest "${KIT}/enforcement/hard-lines.json" || fail=1
   fi
-  # ⟨FILL⟩ e.g. unscoped query, direct vendor-SDK import outside the wrapper, hardcoded secret, calc outside its home module…
 fi
 
 # 3) STATE MACHINE: validate the ledger if it changed.
