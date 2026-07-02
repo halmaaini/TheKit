@@ -80,7 +80,7 @@ enforcement/
 
 ## Adopting into an existing codebase
 
-The engine is diff-based on purpose: pre-commit (`--staged`) and CI (`--range`) check **added lines only**, so an existing codebase is grandfathered by construction — installing the harness does not turn old code red. Run `--all` once as a **debt report** and file the hits as ledger tasks; new code is held to the rules from day one while debt burns down deliberately (**the ratchet**). Merge cases (existing `settings.json`, pre-commit hook, CI) and the full protocol: `../ADOPT-EXISTING.md`.
+The engine is diff-based on purpose: pre-commit (`--staged`) and CI (`--range`) check **added lines only**, so an existing codebase is grandfathered by construction — installing the harness does not turn old code red. Run `--all` once as a **debt report** and file the hits as ledger tasks; new code is held to the rules from day one while debt burns down deliberately (**the ratchet**). Two traps the installer handles but you should know: `core.hooksPath` redirects git away from `.git/hooks/` (a hook installed there would be silently inert — the installer resolves the real dir), and existing hooks must be **chained**, not replaced. Always verify with a throwaway commit that the kit checks visibly fire. Full protocol: `../ADOPT-EXISTING.md`.
 
 ## Cross-agent note
 

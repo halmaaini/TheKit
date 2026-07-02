@@ -21,6 +21,7 @@ Each depth is a strict subset of the next — starting shallow never wastes work
 
 ## Setup — getting the kit in
 
+0. **Triage your existing hooks FIRST.** Run `git config core.hooksPath` and read whatever pre-commit hook you have (husky/lefthook/hand-rolled). Two reasons this is step 0: (a) your hooks run on every adoption commit — an over-broad check (a repo-wide pattern ban, say) will reject kit content; scope it to your own source dirs now, or bypass once with `--no-verify` and note it (the kit's own no-bypass rule starts *after* adoption); (b) if `core.hooksPath` is set, `.git/hooks/` is never consulted — the installer handles this (phase E), but you should know where your hooks actually live before anything else.
 1. **Copy the kit into a subfolder** — this doc uses **`kit/`** throughout (any path works; it's just `{{KIT_PATH}}`):
    ```bash
    git clone --depth 1 https://github.com/halmaaini/TheKit kit && rm -rf kit/.git
@@ -39,13 +40,15 @@ Walk the repo and write down, without judging: the stack (deps, runtime, build),
 
 ### B — Existing docs through intake; decisions reverse-engineered (as-built)
 
-- **Drop every existing doc into `kit/intake/`** and run the standard intake protocol (`kit/intake/README.md`) — ADRs and old design docs are decision gold. Where a doc contradicts the code, **the code wins the as-built record**; log the conflict in `logs/contradiction-log.md` and let the owner rule on which should change.
-- **Reverse-engineer `decisions.md`:** every load-bearing choice already in the code becomes a decision row with **(as-built, adopted YYYY-MM-DD)** in its rationale. Propose in batches; **the owner confirms each batch** (or parks items as `OPEN` H-rows). Wishes → roadmap, not decisions.
+- **Put every existing doc through `kit/intake/`** per the standard protocol (`kit/intake/README.md`) — ADRs and old design docs are decision gold. **Copy live docs** (your README, wiki exports — things the repo still serves) so the *copy* gets processed and archived while the original stays in place until a ruling corrects or replaces it; **move dead notes**. Where a doc contradicts the code, **the code wins the as-built record**; log the conflict in `logs/contradiction-log.md` and let the owner rule on which should change.
+- **Reverse-engineer `decisions.md`:** every load-bearing choice already in the code becomes a decision row with **(as-built, adopted YYYY-MM-DD)** in its rationale. Propose in batches; **the owner confirms each batch** (or parks items as `OPEN` H-rows). Owner unavailable? Mark the batch **(as-built, unconfirmed)** and keep going — the adoption gate requires the confirmation before it signs. Wishes → roadmap, not decisions.
 - Depth 2–3: run the governance pass with the standard triage (fill `03`/`04`/`13` first; adopt `01`/`02` as-is; the rest tightens when it bites). Where the codebase is *internally inconsistent* (two naming styles, two error shapes), the decision picks the winner and the losers become debt (phase D).
 
 ### C — Hard lines from actual invariants
 
 What does this product already promise? What do the tests already assert? What did past incidents teach? Lock 2–5 lines in `governance/13` and wire them via `/hardline` — with `files` scopes tuned to the real layout. Before the harness is installed, run the engine from the kit source: `node kit/enforcement/scripts/check-hard-lines.mjs …`.
+
+A line can be **provisional** (evidence says it's a guarantee; the owner hasn't ruled — e.g. "no running counters"). Keep the heading's `(D-n)` bare — coverage binds on it — and state the provisionality in the body, tied to its `OPEN` H-row. Its debt task blocks on the ruling.
 
 ### D — Gap analysis → the debt ledger (the ratchet)
 
@@ -65,9 +68,11 @@ Every hit is **existing debt**: cluster the hits and file one ledger task per cl
 bash kit/enforcement/install.sh        # refuses to overwrite; --force to override
 ```
 
+The installer resolves `git config core.hooksPath` and installs the hook **where git actually looks** — a hook written to `.git/hooks/` while `core.hooksPath` points elsewhere would be silently inert, which is the worst failure mode a guardrail can have. **Verify with a throwaway commit** that the kit checks visibly run; never trust an installer's word for an enforcement layer.
+
 Existing-repo merge cases the installer deliberately leaves to you:
 - **`.claude/settings.json` exists** → merge the kit's hooks block by hand (the installer says exactly what from where).
-- **A pre-commit hook exists** (husky, lefthook, hand-rolled) → chain it: call the kit's hook from yours (or yours from the kit's) — do not replace silently.
+- **A pre-commit hook already exists** (husky, lefthook, hand-rolled) → the installer skips and prints the chain line: call the kit's hook from yours — do not replace silently.
 - **CI exists** → `guardrails.yml` lands *beside* your workflow; fill its `KIT_PATH` env (`kit`), delete steps your stack doesn't have, and make **guardrails** a required check. Fold its steps into your existing workflow later if you prefer one file.
 
 ### F — Seed delivery from reality — adoption is Phase 1

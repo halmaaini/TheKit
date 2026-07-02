@@ -28,24 +28,26 @@ done
 #    ${KIT}/enforcement/hard-lines.json (add via /hardline). Pre-commit, CI, and /gate all call the SAME
 #    engine, so the checks cannot drift apart. No hand-written greps here.
 staged=$(git diff --cached --name-only --diff-filter=ACM || true)
+# NOTE: script paths are REPO-relative (the harness installs to <repo>/scripts/); only doc/manifest
+# ARGS get the ${KIT} prefix. Hooks run with cwd = repo root.
 if [ -f "${KIT}/enforcement/hard-lines.json" ]; then
-  node "${KIT}/scripts/check-hard-lines.mjs" --staged --manifest "${KIT}/enforcement/hard-lines.json" || fail=1
+  node scripts/check-hard-lines.mjs --staged --manifest "${KIT}/enforcement/hard-lines.json" || fail=1
   # Wiring is enforced: touching the hard-lines doc or manifest must leave fixtures firing and coverage 1:1.
   if echo "${staged}" | grep -qE '(13-domain-hard-lines\.md|hard-lines\.json)'; then
-    node "${KIT}/scripts/check-hard-lines.mjs" --self-test --manifest "${KIT}/enforcement/hard-lines.json" || fail=1
-    node "${KIT}/scripts/check-hard-lines.mjs" --coverage --doc "${KIT}/governance/13-domain-hard-lines.md" --manifest "${KIT}/enforcement/hard-lines.json" || fail=1
+    node scripts/check-hard-lines.mjs --self-test --manifest "${KIT}/enforcement/hard-lines.json" || fail=1
+    node scripts/check-hard-lines.mjs --coverage --doc "${KIT}/governance/13-domain-hard-lines.md" --manifest "${KIT}/enforcement/hard-lines.json" || fail=1
   fi
 fi
 
 # 3) STATE MACHINE: validate the ledger if it changed.
 if echo "${staged}" | grep -q "task-ledger.md"; then
-  node "${KIT}/scripts/validate-ledger.mjs" || fail=1
+  node scripts/validate-ledger.mjs "${KIT}/delivery/02-task-ledger.md" || fail=1
 fi
 
 # 3b) MANIFEST ↔ TREE: the "same-commit" rule, made mechanical — a doc listed but missing,
 #     or a kit doc present but unlisted, blocks the commit.
-if [ -f "${KIT}/scripts/check-manifest.mjs" ] && [ -f "${KIT}/MANIFEST.md" ]; then
-  node "${KIT}/scripts/check-manifest.mjs" --manifest "${KIT}/MANIFEST.md" || fail=1
+if [ -f "scripts/check-manifest.mjs" ] && [ -f "${KIT}/MANIFEST.md" ]; then
+  node scripts/check-manifest.mjs --manifest "${KIT}/MANIFEST.md" || fail=1
 fi
 
 # 4) FAST quality gate. ⟨FILL your commands.⟩ If your test suite runs in a few seconds, RUN IT HERE:
