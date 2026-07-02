@@ -87,7 +87,7 @@ Load column: **Always** = read every session · **Reference** = pull when workin
 | `02-dev-workflow.md` | Living | Always | Adopt; tune phases to your team | never |
 | `03-project-map.md` | Populate-once | Always | Fill with your stack, folders, glossary | never |
 | `04-naming-conventions.md` | Populate-once | Always | Fill your casing/naming table | never |
-| `05-type-safety.md` | Living | Always | Adapt to your language/validation lib | language has no type system to protect |
+| `05-type-safety.md` | Living | Always | Adapt to your language/validation lib (no static types → keep as runtime/boundary-safety rules) | **neither** a type system **nor** an input boundary to protect |
 | `06-file-organization.md` | Living | Always | Adapt size limits & structure | never |
 | `07-testing-standards.md` | Living | Reference | Adapt to your test stack | never |
 | `08-code-comments.md` | Living | Always | Adopt; set your traceability marker style | never |
@@ -124,6 +124,8 @@ Load column: **Always** = read every session · **Reference** = pull when workin
 | `06-agent-build-architecture.md` | Populate-once | Lead | Adopt the roles & protocols; tune to your team | you build solo with no agent protocol |
 | `07-session-handoff.md` | Living | Any agent | The handoff process + template | never |
 | `08-phase-implementation-map.md` | Optional · Living | Lead | If you map delivery phases → impl phases | **your phase model is single-layer** |
+| `tasks/TEMPLATE-task-spec.md` | **Meta** (copy per task) | Lead | Copy per ledger row when seeding tasks — goal, context, exit criteria, handoff log | never (it's the how-to) |
+| `gates/TEMPLATE-gate-spec.md` | **Meta** (copy per gate) | Lead | Copy per phase gate — checklist, mutation-check procedure, sign-off | never (it's the how-to) |
 
 ---
 

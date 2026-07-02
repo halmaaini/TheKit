@@ -63,6 +63,8 @@ The 19 core docs are organized into five layers, from how an agent behaves down 
 
 > **`13-domain-hard-lines.md` is the doc you customize most.** It names the 2–5 non-negotiable guarantees your product rests on. Everything else in governance serves those lines — fill it first and deliberately.
 
+> **Fill order (minimum viable governance).** Don't let ~20 docs stall you: **fill `03`, `04`, `13` first** (what it is · what to call things · what it must never do), **adopt `01`/`02` as-is** (they're designed for it), and let every other doc **start as-shipped and tighten when it first bites** — that's what `living` means. Delete the optional docs that don't apply (update `MANIFEST.md` in the same commit).
+
 ---
 
 ## Always-Loaded set (every session)

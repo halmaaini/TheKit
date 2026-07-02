@@ -94,14 +94,15 @@ The kit rests on one principle, borrowed from good system design:
 
 Do these in order. Don't skip — each step feeds the next. **New to the kit? Skim `example/` first** — a complete filled instance (a fictional URL shortener) that shows what "done" looks like.
 
-1. **Point your agent at the kit.** Copy `AGENTS.md` to your repo root (rename to `CLAUDE.md` if that's what your agent auto-loads); set `{{KIT_PATH}}` and `{{PROJECT_NAME}}`. Now every session starts by reading the kit.
+0. **Clean up the copy.** A "Use this template" copy inherits TheKit's own `README.md` and license files. Replace `README.md` with your project's readme, **keeping a "Based on TheKit" attribution line** (the LICENSE requires credit); keep `LICENSE` and `LICENSE-CC-BY-4.0.txt` — they license the kit content now in your repo.
+1. **Point your agent at the kit.** Copy `AGENTS.md` to your repo root (it's already there if the kit *is* your repo root — just fill it); rename to `CLAUDE.md` if that's what your agent auto-loads; set `{{KIT_PATH}}` and `{{PROJECT_NAME}}`. Now every session starts by reading the kit.
 2. **Drop your raw material in `intake/` and process it.** PDFs, an existing PRD, notes, mockups, HTML — put them in `intake/`; the agent distills them into `decisions.md` and the `product/`/`design/` docs, asking you whenever a file implies a decision or conflicts with one. This is the on-ramp that feeds the next steps. (No raw material yet? Skip it.)
 3. **Fill `decisions.md`.** Capture the locked decisions (concept, stack, architecture, hard constraints) — seeded by intake and your own calls. This is the root everything derives from. Version it.
-4. **Fill `product/` and `design/`.** Write the PRD, data model, and workflows; then the design system and screen specs. Delete `product/agents.md` if there's no AI, and the whole `design/` folder if there's no UI.
-5. **Adapt `governance/`.** Walk each numbered doc: replace `{{PLACEHOLDERS}}`, delete rules that don't apply, and **define your project's real hard lines in `13-domain-hard-lines.md`** (this is the doc you most customize — see the note in it).
-6. **Fill `delivery/`.** Break the work into phases/gates, seed the task ledger, list your risks.
+4. **Fill `product/` and `design/`.** Write the PRD, data model, and workflows; then the design system and screen specs. Delete `product/agents.md` if there's no AI, and the whole `design/` folder if there's no UI — and **update `MANIFEST.md` in the same commit** (its rule).
+5. **Adapt `governance/`.** Priority order, so ~20 docs don't stall you: **fill `03`, `04`, and `13` first** — `13-domain-hard-lines.md` is the doc you most customize (see the note in it) — **adopt `01`/`02` as-is**, and let the rest start as-shipped, tightening each doc when it first bites. Delete rules and optional docs that don't apply (MANIFEST, same commit). *Tip: it's fine to do step 7 (install the harness) before this step — `/hardline` and the checks are useful while you write the hard lines; until then, run the engine from `enforcement/scripts/`.*
+6. **Fill `delivery/`.** Break the work into phases/gates, seed the task ledger — copying `delivery/tasks/TEMPLATE-task-spec.md` per task and `delivery/gates/TEMPLATE-gate-spec.md` per gate — and list your risks.
 7. **Install the enforcement harness (optional, recommended).** Copy `enforcement/` per its README so the checkable rules bind mechanically — SessionStart + guard hooks, the ledger validator, a pre-commit backstop, and CI. Docs-only is fine to start; add the harness when you want drift prevention.
-8. **Delete `example/`** once your own docs are written — it's a teaching aid, not part of your project.
+8. **Delete `example/`** once your own docs are written — it's a teaching aid, not part of your project (MANIFEST, same commit).
 9. **Start building.** Each session: read the always-loaded governance set + the ledger, do one task, update the ledger, log any rulings.
 
 > **Rule of thumb while filling:** every rule and every doc must answer *"what bug or friction does this prevent in THIS project?"* If it doesn't, delete it. **A page that gets read beats ten that get skipped.**
@@ -119,7 +120,7 @@ Do these in order. Don't skip — each step feeds the next. **New to the kit? Sk
 > Delete this file if: <condition, for optional docs>
 ```
 
-**2. Placeholders are explicit:** `{{PROJECT_NAME}}`, `{{STACK_FRAMEWORK}}`, `⟨FILL: …⟩`. Nothing filled-in is real until you replace it.
+**2. Placeholders are explicit:** `{{PROJECT_NAME}}`, `{{STACK_FRAMEWORK}}`, `⟨FILL: …⟩`. Nothing filled-in is real until you replace it. Stack doesn't have the thing a placeholder names? Write **"none — ⟨what replaces it⟩"** and keep the rule that survives. Doneness check: `grep -rn "{{[A-Z_]"` (uppercase-anchored, so GitHub Actions' `${{ }}` syntax doesn't false-positive).
 
 **3. Lifecycle vocabulary** (defined once, used everywhere — full list in `MANIFEST.md`):
 

@@ -10,6 +10,8 @@
 The rest of the kit is **advisory prose** — rules an agent is asked to follow. Prose degrades as context fills, gets skipped, and gets rationalized around. This folder makes the *checkable* rules **binding**: the agent is driven through a loop, blocked from forbidden actions, and its state moves are validated by a machine. It turns "please follow the rules" into "you can't drift on the rules a machine can check."
 
 > **The spectrum.** Not everything is mechanically enforceable. "Does this screen feel right?" can't be a hook. So: push every *checkable* rule (branch, path, diff, grep, state invariant, CI) into the harness; leave *judgment* (taste, product fit) to the Review Agent and the human. The goal is **no drift on the mechanical rules**, not "no prose."
+>
+> **One known blind spot:** pattern checks scan **added** lines — they catch a forbidden pattern *appearing*, but cannot see a protective line being **deleted** (removing a guard adds nothing greppable). Tests own that failure mode: every hard line's invariant test fails when its guard is gone — which is why the pre-commit's fast-test slot matters (see `git-hooks/pre-commit.sh` §4).
 
 ## The three layers
 
@@ -35,6 +37,7 @@ Every mechanical rule in the kit now has an enforcer:
 | “Wire the check when you write the line” — no hard line without a check (`13`) | `--coverage` fails when a `13` heading has no manifest entry (or vice-versa); `--self-test` requires fixtures so every pattern provably fires | `check-hard-lines.mjs` via pre-commit + CI; `/hardline` drives the loop |
 | Tests / lint / type green before merge | required CI checks + branch protection | `ci/guardrails.yml` |
 | Provenance / immutability / isolation domain lines (`13`) | code-level DB triggers + tests (your app owns these) | out of harness scope — see each hard line's *Enforcement* in `governance/13` |
+| MANIFEST ↔ file-tree sync (the "same-commit" rule) | doc-level only today — reminders at the deletion steps in `START-HERE.md`; a mechanical drift check is a candidate future addition | — |
 
 ## Layout
 
@@ -69,6 +72,7 @@ enforcement/
 5. **Fill placeholders** everywhere: `{{KIT_PATH}}` (where the kit lives), `{{DEFAULT_BRANCH}}`, `{{INSTALL_CMD}}` / `{{LINT_CMD}}` / `{{TYPE_CMD}}` / `{{TEST_CMD}}`.
 6. **Fill `hard-lines.json`** — one entry per hard line in `governance/13`, fixtures required (`/hardline` drives the loop; `example/enforcement/hard-lines.json` shows a filled instance). It stays in the kit's `enforcement/` folder (living config); pre-commit/CI/`/gate` point at it via `--manifest`. Remove `"template": true` when your entries are real — until then the scan modes warn instead of binding.
 7. **Chmod the shell hooks:** `chmod +x enforcement/.claude/hooks/session-start.sh git-hooks/pre-commit.sh`.
+8. **Strip the "TEMPLATE — installs to…" header comment** from each installed copy — the installed file is the real thing, not a template, and leftover `{{…}}` mentions in those headers pollute the placeholder doneness check.
 
 ## Cross-agent note
 

@@ -19,6 +19,7 @@
 - **Every decision gets a stable ID** (`D-1`, `D-2`, …). IDs are permanent — never renumber. Governance rules and code comments cite these IDs (the traceability spine).
 - **Group decisions into thematic sections** (below). Add sections your project needs; delete those it doesn't.
 - **To change a locked decision:** amend the row in place, bump the version, and add an entry to `logs/decisions-log.md` explaining the change. Never silently overwrite history.
+- **Versioning convention:** the blank template is `0.1`; your first real fill bumps to `0.2`; bump the minor per amendment batch after that, and call it `1.0` when the record is first locked/shared beyond yourself.
 - **Mark unresolved items `OPEN`** and track them in the Open Questions section until they lock.
 
 ---

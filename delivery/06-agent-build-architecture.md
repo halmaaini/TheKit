@@ -23,6 +23,8 @@ The value of this doc is the **protocols** — the ~17 rules below that turn "an
 
 > Rule of thumb: every protocol must answer *"what specific failure does this prevent in THIS project?"* If it can't, delete it. A protocol that gets followed beats ten that get skipped.
 
+> **Minimum tune (don't let this doc's size stall you):** only steps 1 and 5 above are load-bearing on day one — pick the roles and set the counts/sign-offs. Every other `⟨FILL⟩` in this file can wait until the protocol it belongs to first fires; the protocols read fine as-shipped.
+
 ---
 
 ## Platform note

@@ -69,7 +69,7 @@ Full roles, protocols, and edge-case rules live in `delivery/06-agent-build-arch
 
 ## Task Ledger
 
-⟨FILL: one section per phase; one row per task. Use a stable `{{TASK-ID}}` scheme (e.g. `{{PHASE}}-01`, `{{PHASE}}-02`). "Depends On" lists the task IDs (or phase gates) that must be `Done`/`Gate: Passed` first. "Spec File" points to the task's execution contract. Keep the gate itself as the final row of each phase.⟩
+⟨FILL: one section per phase; one row per task. Use a stable `{{TASK-ID}}` scheme (e.g. `{{PHASE}}-01`, `{{PHASE}}-02`). "Depends On" lists the task IDs (or phase gates) that must be `Done` **or beyond** (`Review: Passed`, `Gate: Passed`) first. "Spec File" points to the task's execution contract — **copy `delivery/tasks/TEMPLATE-task-spec.md` for each task, and `delivery/gates/TEMPLATE-gate-spec.md` for each gate**, and keep the gate itself as the final row of each phase.⟩
 
 ### {{PHASE-2}} — {{Phase name}}
 

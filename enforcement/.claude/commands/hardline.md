@@ -37,6 +37,8 @@ node scripts/check-hard-lines.mjs --coverage --doc {{KIT_PATH}}/governance/13-do
 
 Both must pass. A self-test failure means your regex doesn't fire — **fix the pattern, not the fixture.** A coverage failure means the two halves disagree.
 
+> Harness not installed yet (writing hard lines at START-HERE step 5)? Run the same commands from the kit source — `node {{KIT_PATH}}/enforcement/scripts/check-hard-lines.mjs …` — they behave identically.
+
 ## 5 — Record it
 
 - Add a row to the rule→mechanism map in `{{KIT_PATH}}/enforcement/README.md`.

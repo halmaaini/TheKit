@@ -1,6 +1,6 @@
 # AGENTS.md — Agent Entry Point
 
-> **Template · copy me to your repository root.** This is the first file a coding agent reads when it opens the repo. Place it at the repo root so it auto-loads. If your agent reads a different filename, copy/rename this file accordingly (Claude Code → `CLAUDE.md`; Cursor → `.cursor/rules/`; others → `AGENTS.md`). Keep the content identical.
+> **Template · copy me to your repository root** *(already there if the kit is your repo root — just fill and delete this banner)*. This is the first file a coding agent reads when it opens the repo. Place it at the repo root so it auto-loads. If your agent reads a different filename, copy/rename this file accordingly (Claude Code → `CLAUDE.md`; Cursor → `.cursor/rules/`; others → `AGENTS.md`). Keep the content identical.
 > Lifecycle: populate-once · Owner: Lead · Load: auto (repo root — read every session).
 > Fill: set `{{KIT_PATH}}` and `{{PROJECT_NAME}}`, then delete this banner.
 

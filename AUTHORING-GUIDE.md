@@ -18,6 +18,8 @@
 | **PART II — Authoring the Delivery Plan** | what each `delivery/` doc must contain |
 | **PART III — Kit conventions** | the banner, lifecycle vocab, placeholder convention, and traceability spine (pointers to START-HERE/MANIFEST) |
 
+> **`product/` and `design/` are deliberately not specced here** — those templates are self-guiding: each carries its own inline authoring spec (banner + `⟨FILL⟩` guidance), and `example/` shows a filled instance. This guide covers the two folders whose docs must be *authored*, not just filled.
+
 ---
 
 ## First principles (apply to every doc you write)
@@ -307,13 +309,15 @@ Governs the AI agent itself — how it thinks, acts, and what process it follows
 **Must contain:**
 - **A status vocabulary** — a small, unambiguous set. A good default: `Not Started`, `In Progress`, `Blocked`, `Done`, `Review: Passed`, `Review: Failed`, `Gate: Pending`, `Gate: Passed`. Tell the author to trim any their workflow doesn't use (drop the `Review:`/`Gate:` values if there's no separate review/gate step).
 - **A roles summary** pointing to `06` for the full version (Task / Review / Gate / Owner in one line each).
-- **The update protocol for agents** — before starting, confirm every "Depends On" row is `Done`/`Gate: Passed` (else set `Blocked` with a reason); flip to `In Progress` when starting; to `Done` when exit criteria are checked and the handoff log is filled; the gate agent flips the phase row and unblocks the next phase.
+- **The update protocol for agents** — before starting, confirm every "Depends On" row is `Done` or beyond (`Review: Passed`, `Gate: Passed`) (else set `Blocked` with a reason); flip to `In Progress` when starting; to `Done` when exit criteria are checked and the handoff log is filled; the gate agent flips the phase row and unblocks the next phase.
 - **A Phase Overview table** (one row per phase → status → gate file) as the top-level board.
 - **The ledger itself** — one section per phase, one row per task: stable task id, name, status, "Depends On" (task ids / phase gates), and the spec-file path. Keep the gate as the final row of each phase.
 - **(Optional) Parallel-task visibility** — which tasks can run at once because no dependency links them; this is what lets an orchestrator fan out safely.
 - **A progress summary** — totals, tasks done, gates passed, current phase, release target.
 
 **Format:** Status table + protocol + phase/task tables. This is the most-edited doc in the kit — keep the vocabulary tiny.
+
+> **Task specs & gate specs:** every ledger row points at a spec file. Author them from the shipped templates — `delivery/tasks/TEMPLATE-task-spec.md` (goal · context · checkbox exit criteria · handoff-log skeleton per `06`) and `delivery/gates/TEMPLATE-gate-spec.md` (checklist · mutation-check procedure · sign-off). One copy per task/gate, made when you seed the ledger.
 
 ### `delivery/03-task-matrix.md` — Task Matrix · *living · Reference*
 
@@ -406,6 +410,10 @@ The authoring guide itself uses `**Meta**` instead of `**Template**` (it's guida
 Nothing filled-in is real until replaced. Two markers:
 - **`{{PLACEHOLDER}}`** — a value to substitute (`{{PROJECT_NAME}}`, `{{STACK_FRAMEWORK}}`, `{{TASK-ID}}`).
 - **`⟨FILL: …⟩`** — a guidance block telling you what to write there; **delete it once done**. Never leave `{{…}}` or `⟨FILL⟩` in a doc you consider finished.
+
+Two practical rules learned from real instantiations:
+- **Your stack doesn't have the thing a placeholder names** (`{{ORM}}` in a no-ORM project, `{{ROLE_A}}` with no auth)? Write **"none — ⟨what replaces it⟩"** and keep whatever part of the rule survives; delete only rules that protect nothing you have.
+- **Doneness check:** `grep -rn "{{[A-Z_]" --include="*.md" --include="*.sh" --include="*.mjs" .` — anchored to uppercase so GitHub Actions' own `${{ github.… }}` syntax and prose mentions of the marker don't false-positive.
 
 ### The decision-ID traceability spine
 

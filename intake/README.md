@@ -26,7 +26,7 @@
    - Anything that implies a *decision* → `../decisions.md` **first** (with a version bump), then the docs derived from it.
    - Product facts → `../product/` (`prd.md` · `data-model.md` · `workflows.md` · `roadmap.md`).
    - Visual/UI material → `../design/` (`design-system.md` · `screens.md` · wireframe artifacts).
-3. **Ask, don't guess** — whenever a file implies a decision, adds scope, or is ambiguous, use `AskUserQuestion` (e.g. *"this deck implies feature X, not in your scope — add / defer to roadmap / ignore?"*). Confirm before committing a decision.
+3. **Ask, don't guess** — whenever a file implies a decision, adds scope, or is ambiguous, use `AskUserQuestion` (e.g. *"this deck implies feature X, not in your scope — add / defer to roadmap / ignore?"*). Confirm before committing a decision. **Owner unavailable (async/autonomous run)?** Park the item in `decisions.md` → Open Questions (`H-n`), continue with what's unambiguous, and surface the open questions at session end — never lock a decision silently to keep moving.
 4. **Record conflicts** — a file that contradicts an existing decision → `../logs/contradiction-log.md`; the resolution/ruling → `../logs/decisions-log.md`.
 5. **Log provenance** — add a row to `intake-log.md`: the file, what was extracted, which docs it fed, open questions, status. So every distilled claim traces back to its source.
 6. **Archive the file** — once processed, move the raw file to `../archive/` and record it in `../archive/archive-log.md`. Don't leave processed files sitting in the dropzone.
