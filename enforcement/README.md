@@ -37,13 +37,14 @@ Every mechanical rule in the kit now has an enforcer:
 | “Wire the check when you write the line” — no hard line without a check (`13`) | `--coverage` fails when a `13` heading has no manifest entry (or vice-versa); `--self-test` requires fixtures so every pattern provably fires | `check-hard-lines.mjs` via pre-commit + CI; `/hardline` drives the loop |
 | Tests / lint / type green before merge | required CI checks + branch protection | `ci/guardrails.yml` |
 | Provenance / immutability / isolation domain lines (`13`) | code-level DB triggers + tests (your app owns these) | out of harness scope — see each hard line's *Enforcement* in `governance/13` |
-| MANIFEST ↔ file-tree sync (the "same-commit" rule) | doc-level only today — reminders at the deletion steps in `START-HERE.md`; a mechanical drift check is a candidate future addition | — |
+| MANIFEST ↔ file-tree sync (the "same-commit" rule) | drift checker: a doc listed-but-missing or present-but-unlisted fails pre-commit and CI (transient dirs exempt — tune the list in the script) | `scripts/check-manifest.mjs` |
 
 ## Layout
 
 ```
 enforcement/
 ├── README.md                  ← this file
+├── install.sh                 ← one-step installer (copy + strip headers + chmod + checklist)
 ├── state-machine.md           ← the ledger/gate state machine the validator enforces
 ├── hard-lines.json            ← machine-readable hard-line checks — one entry per line in governance/13
 ├── .claude/
@@ -58,12 +59,15 @@ enforcement/
 │   └── pre-commit.sh           → repo .git/hooks/pre-commit  (append-only + hard-line + ledger backstop)
 ├── scripts/
 │   ├── validate-ledger.mjs     → repo scripts/  (state-machine validator; run by hooks, /gate, CI)
-│   └── check-hard-lines.mjs    → repo scripts/  (hard-line engine: --staged · --range · --all · --coverage · --self-test)
+│   ├── check-hard-lines.mjs    → repo scripts/  (hard-line engine: --staged · --range · --all · --coverage · --self-test)
+│   └── check-manifest.mjs      → repo scripts/  (MANIFEST ↔ tree drift checker; run by pre-commit + CI)
 └── ci/
     └── guardrails.yml          → repo .github/workflows/  (agent-agnostic required checks)
 ```
 
 ## Install (in your target repo)
+
+**One step:** from your repo root, `bash <kit>/enforcement/install.sh` — copies the layers below, strips the template headers from the installed copies, chmods the hooks, refuses to overwrite existing files (`--force` to override; an existing `.claude/settings.json` is never touched — merge it by hand), and prints the fill checklist. *Windows: run it under Git Bash or WSL.* Or do it manually:
 
 1. **Copy the Claude Code layer:** `enforcement/.claude/` → `<repo>/.claude/` (merge `settings.json` if you already have one).
 2. **Copy the scripts:** `enforcement/scripts/` → `<repo>/scripts/`.

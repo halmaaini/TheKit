@@ -24,6 +24,7 @@
 
 | Doc | Lifecycle | Load | Owner | Populate when | Delete if |
 |---|---|---|---|---|---|
+| `README.md` | Populate-once | — | Lead | **Replace with your project's readme on copy** (START-HERE step 0), keeping the attribution line the LICENSE requires | never — every repo needs one |
 | `AGENTS.md` | Populate-once | — | Lead | **Copy to your repo root** (or `CLAUDE.md`); the entry file your coding agent auto-loads | never |
 | `READTHIS.md` | Living | Any | Plain-English human guide — how the kit works, do/don't, folder map | never |
 | `START-HERE.md` | Living | Always | Lead | Adapt the intro to your project once | never |
@@ -157,6 +158,7 @@ Makes the *checkable* rules bind mechanically. Installed into the target repo (`
 | Doc/file | Lifecycle | Owner | Rule |
 |---|---|---|---|
 | `README.md` | Living | Lead | Install steps + the rule→mechanism map. |
+| `install.sh` | Living (code) | Lead | One-step installer — run from the target repo root; never overwrites without `--force`. |
 | `state-machine.md` | Living | Lead | The ledger/gate state machine the validator enforces — keep in sync with the validator. |
 | `hard-lines.json` | Living | Lead/Architect | **The machine-readable half of `governance/13`** — one entry per hard line (patterns + required fixtures, or `mechanical: false` + test). `check-hard-lines.mjs --coverage` binds it 1:1 to `13`; pre-commit, CI, and `/gate` run the same engine. Add entries via `/hardline`. |
 | `.claude/`, `git-hooks/`, `scripts/`, `ci/` | Living (code) | Lead | Executable templates — fill placeholders, then copy into the repo. |

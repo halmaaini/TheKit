@@ -60,3 +60,6 @@ jobs:
 
       - name: Ledger
         run: node scripts/validate-ledger.mjs
+
+      - name: MANIFEST in sync with the tree
+        run: node scripts/check-manifest.mjs --manifest MANIFEST.md

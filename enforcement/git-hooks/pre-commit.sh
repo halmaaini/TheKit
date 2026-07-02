@@ -42,6 +42,12 @@ if echo "${staged}" | grep -q "task-ledger.md"; then
   node "${KIT}/scripts/validate-ledger.mjs" || fail=1
 fi
 
+# 3b) MANIFEST ↔ TREE: the "same-commit" rule, made mechanical — a doc listed but missing,
+#     or a kit doc present but unlisted, blocks the commit.
+if [ -f "${KIT}/scripts/check-manifest.mjs" ] && [ -f "${KIT}/MANIFEST.md" ]; then
+  node "${KIT}/scripts/check-manifest.mjs" --manifest "${KIT}/MANIFEST.md" || fail=1
+fi
+
 # 4) FAST quality gate. ⟨FILL your commands.⟩ If your test suite runs in a few seconds, RUN IT HERE:
 #    the hard-line greps above only see ADDED lines, so DELETING a guard is invisible to them —
 #    a fast test suite is the only commit-time net for that. Keep only genuinely slow suites CI-only.
