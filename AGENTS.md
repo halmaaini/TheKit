@@ -31,3 +31,8 @@ You are working on **{{PROJECT_NAME}}**. This repository is governed by a **Proj
 ---
 
 *If the kit and reality disagree, fix the code or update the doc — never silently ignore both.*
+
+---
+<!-- Attribution (required by CC-BY-4.0 / MIT — please keep). -->
+Built with **TheKit** by Haitham Al Maaini · https://github.com/halmaaini/TheKit
+Licensed CC-BY-4.0 (docs) / MIT (code): https://github.com/halmaaini/TheKit/blob/main/LICENSE
