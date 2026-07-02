@@ -157,3 +157,7 @@ The kit is built to evolve. Route each change to the right home:
 ---
 
 *Keystone doc. If the kit's structure changes, update this map and `MANIFEST.md` in the same commit.*
+
+---
+© 2026 Haitham Al Maaini · **TheKit** · https://github.com/halmaaini/TheKit
+Dual-licensed — docs: CC-BY-4.0 · code: MIT. Reuse freely **with attribution**; see [LICENSE](./LICENSE).

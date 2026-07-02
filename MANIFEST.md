@@ -167,3 +167,7 @@ Makes the *checkable* rules bind mechanically. Installed into the target repo (`
 - **Never rewrite history in a `logs/` file** — append.
 - **Delete `optional` docs that don't apply** to your project rather than leaving boilerplate.
 - **Update this MANIFEST in the same commit** whenever you add, remove, merge, or re-scope a doc.
+
+---
+© 2026 Haitham Al Maaini · **TheKit** · https://github.com/halmaaini/TheKit
+Dual-licensed — docs: CC-BY-4.0 · code: MIT. Reuse freely **with attribution**; see [LICENSE](./LICENSE).
