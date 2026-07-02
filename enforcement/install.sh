@@ -55,14 +55,23 @@ fi
 # 2) Scripts
 for f in "$SRC"/scripts/*.mjs; do install_file "$f" "scripts/$(basename "$f")"; done
 
-# 3) Git hook (into .git/hooks — or set `git config core.hooksPath git-hooks` and version it instead)
-install_file "$SRC/git-hooks/pre-commit.sh" ".git/hooks/pre-commit"
+# 3) Git hook — into the dir git ACTUALLY consults. If core.hooksPath is set (husky, lefthook,
+#    a versioned hooks dir), .git/hooks is never read; installing there would be silently inert.
+HOOKS_DIR="$(git config core.hooksPath || true)"; HOOKS_DIR="${HOOKS_DIR:-.git/hooks}"
+if [ "$HOOKS_DIR" != ".git/hooks" ]; then
+  echo "ℹ core.hooksPath is set — installing the kit hook to '$HOOKS_DIR/' (not .git/hooks/)."
+fi
+if [ -e "$HOOKS_DIR/pre-commit" ] && [ "$FORCE" -ne 1 ]; then
+  skipped+=("$HOOKS_DIR/pre-commit (exists — CHAIN the kit hook: add 'bash $SRC/git-hooks/pre-commit.sh || exit 1' to it, with KIT_PATH exported)")
+else
+  install_file "$SRC/git-hooks/pre-commit.sh" "$HOOKS_DIR/pre-commit"
+fi
 
 # 4) CI workflow
 install_file "$SRC/ci/guardrails.yml" ".github/workflows/guardrails.yml"
 
 # 5) chmod the shell pieces
-chmod +x .claude/hooks/session-start.sh .git/hooks/pre-commit 2>/dev/null || true
+chmod +x .claude/hooks/session-start.sh "$HOOKS_DIR/pre-commit" 2>/dev/null || true
 
 echo "✅ installed ${#copied[@]} file(s):"; printf '   %s\n' "${copied[@]:-"(none — everything existed)"}"
 if [ ${#skipped[@]} -gt 0 ]; then

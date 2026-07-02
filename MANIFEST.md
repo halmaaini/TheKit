@@ -28,6 +28,7 @@
 | `AGENTS.md` | Populate-once | — | Lead | **Copy to your repo root** (or `CLAUDE.md`); the entry file your coding agent auto-loads | never |
 | `READTHIS.md` | Living | Any | Plain-English human guide — how the kit works, do/don't, folder map | never |
 | `START-HERE.md` | Living | Always | Lead | Adapt the intro to your project once | never |
+| `ADOPT-EXISTING.md` | Living | When adopting | Lead | The adoption protocol for existing codebases (code → decisions, as-built) | **greenfield project — you followed START-HERE instead** |
 | `MANIFEST.md` (this) | Living | Always | Lead | Update whenever the doc set changes | never |
 | `AUTHORING-GUIDE.md` | **Meta** | Reference | Lead | Read before authoring/editing any doc | never (it's the how-to) |
 | `decisions.md` | **Populate-once → then append/amend** | Always | Lead/Architect | **First.** The canonical decision record; everything derives from it | never — this is the source of truth |

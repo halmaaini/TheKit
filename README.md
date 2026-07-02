@@ -16,6 +16,23 @@ read **[START-HERE.md](./START-HERE.md)** (technical) or **[READTHIS.md](./READT
 (plain-English). New to it? Skim **[example/](./example/)** — a filled worked
 instance (a fictional URL shortener) showing what "done" looks like.
 
+**Already have a codebase?** Follow **[ADOPT-EXISTING.md](./ADOPT-EXISTING.md)** —
+the kit drops into a `kit/` subfolder, the record is reverse-engineered *as-built*,
+and a grandfathering ratchet holds every new line to the rules without turning
+your existing code red.
+
+## For agents: told to adopt this kit?
+
+If a human pointed you at this URL from inside their project ("check this out — let's adopt it"), do this **in order**:
+
+1. **Diagnose the case** from their repo, before touching anything:
+   **(1)** empty / scaffolding-only → greenfield · **(2)** PRD, notes, or mockups but no real code → greenfield with a full `intake/` · **(3)** working code → adoption.
+2. **Report the diagnosis and your plan to the owner, and wait for the go.** Never clone anything into their tree unconfirmed.
+3. **Execute the matching path:**
+   - Cases **1–2**: copy the kit in (the `git clone --depth 1 … && rm -rf kit/.git` block in [ADOPT-EXISTING.md](./ADOPT-EXISTING.md) Setup — the "Use this template" button is the human/GitHub route), then follow **[START-HERE.md](./START-HERE.md)** with `{{KIT_PATH}}` set to where you put it; case 2 routes their existing docs through `intake/`.
+   - Case **3**: follow **[ADOPT-EXISTING.md](./ADOPT-EXISTING.md)** end to end — hook triage first, record starts true, debt filed, ratchet on.
+4. **Every path ends with the owner confirming the decisions.** That's the design, not a courtesy — you assess and propose; they lock.
+
 ## What's inside
 - `decisions.md` — the single source of truth
 - `intake/` — drop raw material; the agent distills it into the docs
