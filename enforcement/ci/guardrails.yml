@@ -1,0 +1,72 @@
+# TEMPLATE — agent-agnostic CI backstop. Fill every {{PLACEHOLDER}} and the ⟨FILL⟩ note below.
+# Installs to `.github/workflows/guardrails.yml` in the target repo.
+#
+# This is the machine that does not get tired: it re-checks on every PR what the
+# agent loop is supposed to have already enforced, so a skipped review can't ship.
+#
+# MAKE IT A REQUIRED CHECK: in the repo's branch-protection rules for the default
+# branch, mark this workflow's job ("guardrails") as a required status check and
+# require branches to be up to date before merging. Without branch protection this
+# file only reports — it does not block. That protection is the whole point.
+
+name: guardrails
+
+on:
+  pull_request:
+
+jobs:
+  guardrails:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history, for diffing against the base)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ⟨FILL: swap for your runtime — actions/setup-node, setup-python, setup-go, … ⟩
+      - name: Set up runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: "{{NODE_VERSION}}" # e.g. "20"
+
+      - name: Install dependencies
+        run: "{{INSTALL_CMD}}" # e.g. npm ci
+
+      - name: Lint
+        run: "{{LINT_CMD}}" # e.g. npm run lint
+
+      - name: Type check
+        run: "{{TYPE_CMD}}" # e.g. npm run typecheck
+
+      - name: Test
+        run: "{{TEST_CMD}}" # e.g. npm test
+
+      # Fail the build if any forbidden pattern appears in the PR diff.
+      # Replace the example patterns with YOUR project's hard-line greps
+      # (see governance/13-domain-hard-lines.md — each hard line names its spot-check).
+      - name: Hard lines
+        run: |
+          set -euo pipefail
+          BASE="origin/${{ github.base_ref }}"
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+          # Only the added lines in this PR's diff.
+          ADDED="$(git diff "$BASE"...HEAD --unified=0 | grep '^+' | grep -v '^+++' || true)"
+          # ⟨FILL: your patterns⟩ — examples below; extend with your real hard lines
+          # (e.g. unscoped queries, direct vendor imports outside the wrapper layer,
+          #  calculations outside their home module, restricted fields in responses).
+          PATTERNS=(': any' 'as any' '@ts-ignore')
+          FAIL=0
+          for p in "${PATTERNS[@]}"; do
+            if printf '%s\n' "$ADDED" | grep -nF "$p"; then
+              echo "::error::Forbidden pattern in diff: $p"
+              FAIL=1
+            fi
+          done
+          if [ "$FAIL" -ne 0 ]; then
+            echo "Hard-line check failed. Remove the flagged patterns."
+            exit 1
+          fi
+          echo "No forbidden patterns found."
+
+      - name: Ledger
+        run: node scripts/validate-ledger.mjs
